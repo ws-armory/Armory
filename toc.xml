@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Addon Author="o1b4t" APIVersion="9" Name="Armory" Description="">
+    <Script Name="Armory.lua"/>
+    <Form Name="Armory.xml"/>
+</Addon>
