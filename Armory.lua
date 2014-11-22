@@ -81,9 +81,14 @@ end
 function Armory:OnArmoryOn()
 	local JSON = Apollo.GetPackage("Lib:dkJSON-2.5").tPackage
 	local items = {}
+	local slotId
 
 	for key, item in ipairs(GameLib.GetPlayerUnit():GetEquippedItems()) do
-		items[item:GetSlot()] = item:GetItemId()
+		slotId = item:GetSlot()
+		-- Do not export Tool, Key and Bag items
+		if slotId ~= 6 and slotId ~= 9 and slotId < 17 then
+			items[item:GetSlot()] = item:GetItemId()
+		end
 	end
 	
 	local data = Armory:Base64(JSON.encode(items))
