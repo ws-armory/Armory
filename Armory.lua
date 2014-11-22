@@ -83,7 +83,7 @@ function Armory:OnArmoryOn()
 	local items = {}
 
 	for key, item in ipairs(GameLib.GetPlayerUnit():GetEquippedItems()) do
-		items[tostring(key)] = item:GetItemId()
+		items[item:GetSlot()] = item:GetItemId()
 	end
 	
 	local data = Armory:Base64(JSON.encode(items))
