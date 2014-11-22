@@ -14,6 +14,8 @@ local Armory = {}
 -- Constants
 -----------------------------------------------------------------------------------------------
 -- e.g. local kiExampleVariableMax = 999
+local Website = "http://ws-armory.github.io"
+local WebsiteView = "view.html"
  
 -----------------------------------------------------------------------------------------------
 -- Initialization
@@ -79,23 +81,24 @@ end
 
 -- on SlashCommand "/armory"
 function Armory:OnArmoryOn()
-	local JSON = Apollo.GetPackage("Lib:dkJSON-2.5").tPackage
 	local items = {}
 	local slotId
+	local url
 
 	for key, item in ipairs(GameLib.GetPlayerUnit():GetEquippedItems()) do
 		slotId = item:GetSlot()
 		-- Do not export Tool, Key and Bag items
 		if slotId ~= 6 and slotId ~= 9 and slotId < 17 then
-			items[item:GetSlot()] = item:GetItemId()
+			if url == nil or url == '' then
+				url = Website .. "/" .. WebsiteView .. "?" .. slotId .. "=" .. item:GetItemId()
+			else
+				url = url .. "&" ..slotId .. "=" .. item:GetItemId()
+			end
 		end
 	end
-	
-	local data = Armory:Base64(JSON.encode(items))
 
 	self.wndMain:Invoke() -- show the window
-	self.wndMain:FindChild("Text"):SetText(data)
-	self.wndMain:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard,data)
+	self.wndMain:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard,url)
 	self.wndMain:Show(true)
 end
 
@@ -104,21 +107,6 @@ function Armory:OnClose()
 	self.wndMain:Close() -- hide the window
 end
 
--- Base64 encode
--- This code snippet comes from http://lua-users.org/wiki/BaseSixtyFour
-function Armory:Base64(data)
-	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-    return ((data:gsub('.', function(x) 
-        local r,b='',x:byte()
-        for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
-        return r;
-    end)..'0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
-        if (#x < 6) then return '' end
-        local c=0
-        for i=1,6 do c=c+(x:sub(i,i)=='1' and 2^(6-i) or 0) end
-        return b:sub(c+1,c+1)
-    end)..({ '', '==', '=' })[#data%3+1])
-end
 
 -----------------------------------------------------------------------------------------------
 -- Armory Instance
