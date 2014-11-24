@@ -15,7 +15,6 @@ local Armory = {}
 -----------------------------------------------------------------------------------------------
 -- e.g. local kiExampleVariableMax = 999
 local Website = "http://ws-armory.github.io"
-local WebsiteView = "view.html"
  
 -----------------------------------------------------------------------------------------------
 -- Initialization
@@ -90,7 +89,7 @@ function Armory:OnArmoryOn()
 		-- Do not export Tool, Key and Bag items
 		if slotId ~= 6 and slotId ~= 9 and slotId < 17 then
 			if url == nil or url == '' then
-				url = Website .. "/" .. WebsiteView .. "?" .. slotId .. "=" .. item:GetItemId()
+				url = Website .. "/?" .. slotId .. "=" .. item:GetItemId()
 			else
 				url = url .. "&" ..slotId .. "=" .. item:GetItemId()
 			end
