@@ -98,7 +98,6 @@ function Armory:OnArmoryOn()
 
 	self.wndMain:Invoke() -- show the window
 	self.wndMain:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard,url)
-	self.wndMain:Show(true)
 end
 
 -- when the Close button is clicked
