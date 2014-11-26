@@ -1,0 +1,6 @@
+package-as: Armory
+ignore:
+  - TODO
+  - NEWS
+  - VERSION
+license-output: LICENSE
