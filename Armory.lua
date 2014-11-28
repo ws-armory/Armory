@@ -52,15 +52,14 @@ end
 -- Armory OnDocLoaded
 -----------------------------------------------------------------------------------------------
 function Armory:OnDocLoaded()
-
 	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
-	    self.wndMain = Apollo.LoadForm(self.xmlDoc, "ArmoryForm", nil, self)
+	    self.wndMain = Apollo.LoadForm(self.xmlDoc, "Armory", nil, self)
 		if self.wndMain == nil then
 			Apollo.AddAddonErrorText(self, "Could not load the main window for some reason.")
 			return
 		end
 		
-	    self.wndMain:Show(false, true)
+	    self.wndMain:Show(true)
 
 		-- if the xmlDoc is no longer needed, you should set it to nil
 		-- self.xmlDoc = nil
@@ -80,7 +79,41 @@ end
 
 -- on SlashCommand "/armory"
 function Armory:OnArmoryOn()
-	local items = {}
+	self.wndMain:Invoke() -- show the window
+	self.wndMain:Show(not self.wndMain:IsVisible(), true)
+end
+
+-- when the Close button is clicked
+function Armory:OnClose()
+	self.wndMain:Close() -- hide the window
+end
+
+function Armory:OnMouseEnter( wndHandler, wndControl, x, y )
+	if wndControl ~= self.wndMain then return end
+	self.wndMain:FindChild("Overlay"):SetSprite("CRB_ActionBarIconSprites:sprActionBar_GreenBorder")
+end
+
+function Armory:OnMouseExit( wndHandler, wndControl, x, y )
+	if wndControl ~= self.wndMain then return end
+	self.wndMain:FindChild("Overlay"):SetSprite("")
+end
+
+function Armory:OnMouseButtonDown( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY, bDoubleClick, bStopPropagation )
+	if wndControl ~= self.wndMain then return end
+	self.wndMain:FindChild("Overlay"):SetSprite("CRB_ActionBarIconSprites:sprAS_ButtonPress")
+	self.wndMain:FindChild("CopyButton"):Show(true)
+end
+
+function Armory:OnMouseButtonUp( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY )
+	if wndControl ~= self.wndMain then return end
+	self.wndMain:FindChild("Overlay"):SetSprite("CRB_ActionBarIconSprites:sprActionBar_GreenBorder")
+end
+
+---------------------------------------------------------------------------------------------------
+-- CopyButton Functions
+---------------------------------------------------------------------------------------------------
+
+function Armory:OnCopy()
 	local slotId
 	local url
 
@@ -95,15 +128,8 @@ function Armory:OnArmoryOn()
 			end
 		end
 	end
-
-	self.wndMain:Invoke() -- show the window
+	
 	self.wndMain:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard,url)
-	self.wndMain:Show(true)
-end
-
--- when the Close button is clicked
-function Armory:OnClose()
-	self.wndMain:Close() -- hide the window
 end
 
 
