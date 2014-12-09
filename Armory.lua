@@ -90,7 +90,7 @@ end
 
 function Armory:OnMouseEnter( wndHandler, wndControl, x, y )
 	if wndControl ~= self.wndMain then return end
-	self.wndMain:FindChild("Overlay"):SetSprite("CRB_ActionBarIconSprites:sprActionBar_GreenBorder")
+	self.wndMain:FindChild("Overlay"):SetSprite("ArmorySprites:Hover")
 end
 
 function Armory:OnMouseExit( wndHandler, wndControl, x, y )
@@ -100,13 +100,13 @@ end
 
 function Armory:OnMouseButtonDown( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY, bDoubleClick, bStopPropagation )
 	if wndControl ~= self.wndMain then return end
-	self.wndMain:FindChild("Overlay"):SetSprite("CRB_ActionBarIconSprites:sprAS_ButtonPress")
+	self.wndMain:FindChild("Overlay"):SetSprite("ArmorySprites:Selected")
 	self.wndMain:FindChild("CopyButton"):Show(true)
 end
 
 function Armory:OnMouseButtonUp( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY )
 	if wndControl ~= self.wndMain then return end
-	self.wndMain:FindChild("Overlay"):SetSprite("CRB_ActionBarIconSprites:sprActionBar_GreenBorder")
+	self.wndMain:FindChild("Overlay"):SetSprite("")
 end
 
 ---------------------------------------------------------------------------------------------------
