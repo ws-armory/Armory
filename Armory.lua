@@ -25,16 +25,14 @@ function Armory:new(o)
     self.__index = self 
 
     -- initialize variables here
-
+	self.isSelected = false
     return o
 end
 
 function Armory:Init()
 	local bHasConfigureFunction = false
 	local strConfigureButtonText = ""
-	local tDependencies = {
-		-- "UnitOrPackageName",
-	}
+	local tDependencies = {}
     Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
 end
  
@@ -44,6 +42,7 @@ end
 -----------------------------------------------------------------------------------------------
 function Armory:OnLoad()
     -- load our form file
+	Apollo.LoadSprites("ArmorySprites.xml","ArmorySprites")
 	self.xmlDoc = XmlDoc.CreateFromFile("Armory.xml")
 	self.xmlDoc:RegisterCallback("OnDocLoaded", self)
 end
@@ -53,22 +52,21 @@ end
 -----------------------------------------------------------------------------------------------
 function Armory:OnDocLoaded()
 	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
-	    self.wndMain = Apollo.LoadForm(self.xmlDoc, "Armory", nil, self)
-		if self.wndMain == nil then
-			Apollo.AddAddonErrorText(self, "Could not load the main window for some reason.")
+	    self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", nil, self)
+		if self.wndArmory == nil then
+			Apollo.AddAddonErrorText(self, "Could not load the Armory window for some reason.")
 			return
 		end
-		
-	    self.wndMain:Show(true)
-
-		-- if the xmlDoc is no longer needed, you should set it to nil
-		-- self.xmlDoc = nil
-		
-		-- Register handlers for events, slash commands and timer, etc.
-		-- e.g. Apollo.RegisterEventHandler("KeyDown", "OnKeyDown", self)
-		Apollo.RegisterSlashCommand("armory", "OnArmoryOn", self)
-		
-		-- Do additional Addon initialization here
+	    self.wndArmory:Show(true)
+	
+		self.wndCopy = Apollo.LoadForm(self.xmlDoc, "Copy", nil, self)
+		if self.wndCopy == nil then
+			Apollo.AddAddonErrorText(self, "Could not load the Copy window for some reason.")
+			return
+		end
+	    self.wndCopy:Show(false)
+	
+		self.xmlDoc = nil
 	end
 end
 
@@ -77,43 +75,44 @@ end
 -----------------------------------------------------------------------------------------------
 -- Define general functions here
 
--- on SlashCommand "/armory"
-function Armory:OnArmoryOn()
-	self.wndMain:Invoke() -- show the window
-	self.wndMain:Show(not self.wndMain:IsVisible(), true)
-end
-
--- when the Close button is clicked
-function Armory:OnClose()
-	self.wndMain:Close() -- hide the window
-end
-
 function Armory:OnMouseEnter( wndHandler, wndControl, x, y )
-	if wndControl ~= self.wndMain then return end
-	self.wndMain:FindChild("Overlay"):SetSprite("ArmorySprites:Hover")
+	if wndControl ~= self.wndArmory then return end
+	
+	if not self.isSelected then
+		self.wndArmory:SetSprite("ArmorySprites:Hover")
+	end
 end
 
 function Armory:OnMouseExit( wndHandler, wndControl, x, y )
-	if wndControl ~= self.wndMain then return end
-	self.wndMain:FindChild("Overlay"):SetSprite("")
+	if wndControl ~= self.wndArmory then return end
+	
+	if not self.isSelected then
+		self.wndArmory:SetSprite("ArmorySprites:Base")
+	end
 end
 
-function Armory:OnMouseButtonDown( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY, bDoubleClick, bStopPropagation )
-	if wndControl ~= self.wndMain then return end
-	self.wndMain:FindChild("Overlay"):SetSprite("ArmorySprites:Selected")
-	self.wndMain:FindChild("CopyButton"):Show(true)
+function Armory:OnMouseClick( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY, bDoubleClick, bStopPropagation )
+	if wndControl ~= self.wndArmory then return end
+	
+	if self.isSelected then
+		self.isSelected = false
+		self.wndArmory:SetSprite("ArmorySprites:Base")
+		self.wndCopy:Close() --self.wndCopy:Show(false)
+	else
+		self.isSelected = true
+		self.wndArmory:SetSprite("ArmorySprites:Active")
+		local data = Armory:LoadItems()
+		self.wndCopy:Invoke() --self.wndCopy:Show(true)
+		self.wndCopy:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard,data)
+	end
 end
 
-function Armory:OnMouseButtonUp( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY )
-	if wndControl ~= self.wndMain then return end
-	self.wndMain:FindChild("Overlay"):SetSprite("")
-end
 
 ---------------------------------------------------------------------------------------------------
 -- CopyButton Functions
 ---------------------------------------------------------------------------------------------------
 
-function Armory:OnCopy()
+function Armory:LoadItems()
 	local slotId
 	local url
 
@@ -129,7 +128,7 @@ function Armory:OnCopy()
 		end
 	end
 	
-	self.wndMain:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard,url)
+	return url
 end
 
 
