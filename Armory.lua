@@ -25,14 +25,18 @@ function Armory:new(o)
     self.__index = self 
 
     -- initialize variables here
-	self.isSelected = false
+	self.wndArmory = nil
+	self.wndCopy = nil
     return o
 end
 
 function Armory:Init()
 	local bHasConfigureFunction = false
 	local strConfigureButtonText = ""
-	local tDependencies = {}
+	local tDependencies = {
+		--"Character",
+		--"Lib:ApolloFixes-1.0",
+	}
     Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
 end
  
@@ -52,11 +56,26 @@ end
 -----------------------------------------------------------------------------------------------
 function Armory:OnDocLoaded()
 	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
-	    self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", nil, self)
+		--local carbineCharacter = Apollo.GetAddon("Character")
+		--if not carbineCharacter then return end
+		--if carabineCharacter == nil then
+		--	Apollo.AddAddonErrorText(self, "Could not load the Character addon for some reason.")
+		--	return
+		--end
+
+		----local wndParent = carbineCharacter.wndMain:FindChild("SelectCostumeWindowToggle")
+		--local wndContainer = Apollo.FindWindowByName("CharacterWindow")
+
+		--self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", wndContainer, self)
+		self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", nil, self)
 		if self.wndArmory == nil then
 			Apollo.AddAddonErrorText(self, "Could not load the Armory window for some reason.")
 			return
 		end
+
+		----self.wndCharacter:FindChild("SelectCostumeWindowToggle"):AttachWindow(self.wndArmory)
+		--local left, top, right, bottom = wndContainer:FindChild("SelectCostumeWindowToggle"):GetAnchorOffsets()
+		--self.wndArmory:SetAnchorOffsets(left, top, left40, top+40)
 	    self.wndArmory:Show(true)
 	
 		self.wndCopy = Apollo.LoadForm(self.xmlDoc, "Copy", nil, self)
@@ -64,8 +83,9 @@ function Armory:OnDocLoaded()
 			Apollo.AddAddonErrorText(self, "Could not load the Copy window for some reason.")
 			return
 		end
-	    self.wndCopy:Show(false)
-	
+
+	    self.wndCopy:Show(false,true)
+
 		self.xmlDoc = nil
 	end
 end
@@ -77,33 +97,34 @@ end
 
 function Armory:OnMouseEnter( wndHandler, wndControl, x, y )
 	if wndControl ~= self.wndArmory then return end
-	
-	if not self.isSelected then
+
+	if not self.wndCopy:IsShown() then
 		self.wndArmory:SetSprite("ArmorySprites:Hover")
 	end
 end
 
 function Armory:OnMouseExit( wndHandler, wndControl, x, y )
 	if wndControl ~= self.wndArmory then return end
-	
-	if not self.isSelected then
+
+	if not self.wndCopy:IsShown() then
 		self.wndArmory:SetSprite("ArmorySprites:Base")
 	end
 end
 
 function Armory:OnMouseClick( wndHandler, wndControl, eMouseButton, nLastRelativeMouseX, nLastRelativeMouseY, bDoubleClick, bStopPropagation )
 	if wndControl ~= self.wndArmory then return end
-	
-	if self.isSelected then
-		self.isSelected = false
+
+	if self.wndCopy:IsShown() then
+		self.wndCopy:Show(false,true)
 		self.wndArmory:SetSprite("ArmorySprites:Base")
-		self.wndCopy:Close() --self.wndCopy:Show(false)
 	else
-		self.isSelected = true
 		self.wndArmory:SetSprite("ArmorySprites:Active")
-		local data = Armory:LoadItems()
-		self.wndCopy:Invoke() --self.wndCopy:Show(true)
-		self.wndCopy:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard,data)
+		self.wndCopy:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard, Armory:LoadItems())
+
+		local nLeft, nTop, nRight, nBottom = self.wndArmory:GetAnchorOffsets()
+		self.wndCopy:SetAnchorOffsets((nLeft-200), nTop, nLeft, (nTop+160)) -- The size of the copy window is 200x160
+
+		self.wndCopy:Show(true,true)
 	end
 end
 
@@ -131,6 +152,16 @@ function Armory:LoadItems()
 	return url
 end
 
+
+function Armory:OnCopyClosed( wndHandler, wndControl )
+	if wndControl ~= self.wndCopy then return end
+
+	-- Ugly hook to make it work with the "CloseOnExternalClick" style
+	self.wndCopy:Invoke()
+	self.wndCopy:Show(false,true)
+
+	self.wndArmory:SetSprite("ArmorySprites:Base")
+end
 
 -----------------------------------------------------------------------------------------------
 -- Armory Instance
