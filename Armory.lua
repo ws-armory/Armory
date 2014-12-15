@@ -34,8 +34,8 @@ function Armory:Init()
 	local bHasConfigureFunction = false
 	local strConfigureButtonText = ""
 	local tDependencies = {
-		--"Character",
-		--"Lib:ApolloFixes-1.0",
+		"Lib:ApolloFixes-1.0",
+		"Character",
 	}
     Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
 end
@@ -45,55 +45,46 @@ end
 -- Armory OnLoad
 -----------------------------------------------------------------------------------------------
 function Armory:OnLoad()
+	self.addonChar = Apollo.GetAddon("Character")
+	Apollo.RegisterEventHandler("ToggleCharacterWindow", "OnToggleCharacterWindow", self)
+
     -- load our form file
 	Apollo.LoadSprites("ArmorySprites.xml","ArmorySprites")
 	self.xmlDoc = XmlDoc.CreateFromFile("Armory.xml")
-	self.xmlDoc:RegisterCallback("OnDocLoaded", self)
-end
 
------------------------------------------------------------------------------------------------
--- Armory OnDocLoaded
------------------------------------------------------------------------------------------------
-function Armory:OnDocLoaded()
-	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
-		--local carbineCharacter = Apollo.GetAddon("Character")
-		--if not carbineCharacter then return end
-		--if carabineCharacter == nil then
-		--	Apollo.AddAddonErrorText(self, "Could not load the Character addon for some reason.")
-		--	return
-		--end
-
-		----local wndParent = carbineCharacter.wndMain:FindChild("SelectCostumeWindowToggle")
-		--local wndContainer = Apollo.FindWindowByName("CharacterWindow")
-
-		--self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", wndContainer, self)
-		self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", nil, self)
-		if self.wndArmory == nil then
-			Apollo.AddAddonErrorText(self, "Could not load the Armory window for some reason.")
-			return
-		end
-
-		----self.wndCharacter:FindChild("SelectCostumeWindowToggle"):AttachWindow(self.wndArmory)
-		--local left, top, right, bottom = wndContainer:FindChild("SelectCostumeWindowToggle"):GetAnchorOffsets()
-		--self.wndArmory:SetAnchorOffsets(left, top, left40, top+40)
-	    self.wndArmory:Show(true)
-	
-		self.wndCopy = Apollo.LoadForm(self.xmlDoc, "Copy", nil, self)
-		if self.wndCopy == nil then
-			Apollo.AddAddonErrorText(self, "Could not load the Copy window for some reason.")
-			return
-		end
-
-	    self.wndCopy:Show(false,true)
-
-		self.xmlDoc = nil
-	end
+	--self.xmlDoc:RegisterCallback("OnDocLoaded", self)
 end
 
 -----------------------------------------------------------------------------------------------
 -- Armory Functions
 -----------------------------------------------------------------------------------------------
 -- Define general functions here
+
+function Armory:OnToggleCharacterWindow(unitArg) --function Armory:OnDocLoaded()
+	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
+		local wndParent = self.addonChar.wndCharacter:FindChild("CharFrame_BGArt")
+
+		self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", wndParent, self)
+		if self.wndArmory == nil then
+			Apollo.AddAddonErrorText(self, "Could not load the Armory window for some reason.")
+			return
+		end
+		
+		local nLeft, nTop, nRight, nBottom = self.addonChar.wndCharacter:FindChild("BGArt_HeaderFrame"):GetAnchorOffsets()
+		self.wndArmory:SetAnchorOffsets(nLeft+7, nTop+47, (nLeft+40)+7, (nTop+38)+47) -- The size of the armory window is 40x38
+	    self.wndArmory:Show(true,true)
+	
+		self.wndCopy = Apollo.LoadForm(self.xmlDoc, "Copy", wndParent, self)
+		if self.wndCopy == nil then
+			Apollo.AddAddonErrorText(self, "Could not load the Copy window for some reason.")
+			return
+		end
+
+	    self.wndCopy:Show(false,true)
+	
+		--self.xmlDoc = nil
+	end
+end
 
 function Armory:OnMouseEnter( wndHandler, wndControl, x, y )
 	if wndControl ~= self.wndArmory then return end
