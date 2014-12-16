@@ -2,27 +2,35 @@
 -- Client Lua Script for Armory
 -- Copyright (c) NCsoft. All rights reserved
 -----------------------------------------------------------------------------------------------
- 
+
 require "Window"
- 
+
 -----------------------------------------------------------------------------------------------
 -- Armory Module Definition
 -----------------------------------------------------------------------------------------------
-local Armory = {} 
- 
+local Armory = {}
+local ClassNames = {
+	[GameLib.CodeEnumClass.Warrior] 	= Apollo.GetString("ClassWarrior"),
+	[GameLib.CodeEnumClass.Engineer]	= Apollo.GetString("ClassEngineer"),
+	[GameLib.CodeEnumClass.Esper] 		= Apollo.GetString("ClassESPER"),
+	[GameLib.CodeEnumClass.Medic] 		= Apollo.GetString("ClassMedic"),
+	[GameLib.CodeEnumClass.Stalker] 	= Apollo.GetString("ClassStalker"),
+	[GameLib.CodeEnumClass.Spellslinger]	= Apollo.GetString("ClassSpellslinger"),
+}
+
 -----------------------------------------------------------------------------------------------
 -- Constants
 -----------------------------------------------------------------------------------------------
 -- e.g. local kiExampleVariableMax = 999
 local Website = "http://ws-armory.github.io"
- 
+
 -----------------------------------------------------------------------------------------------
 -- Initialization
 -----------------------------------------------------------------------------------------------
 function Armory:new(o)
     o = o or {}
     setmetatable(o, self)
-    self.__index = self 
+    self.__index = self
 
     -- initialize variables here
 	self.wndArmory = nil
@@ -127,8 +135,9 @@ end
 function Armory:LoadItems()
 	local slotId
 	local url
+	local unit = GameLib.GetPlayerUnit()
 
-	for key, item in ipairs(GameLib.GetPlayerUnit():GetEquippedItems()) do
+	for key, item in ipairs(unit:GetEquippedItems()) do
 		slotId = item:GetSlot()
 		-- Do not export Tool, Key and Bag items
 		if slotId ~= 6 and slotId ~= 9 and slotId < 17 then
@@ -139,7 +148,10 @@ function Armory:LoadItems()
 			end
 		end
 	end
-	
+
+	local title = unit:GetName() .. " - " .. ClassNames[unit:GetClassId()] .. " [" .. unit:GetLevel() .. "]"
+	url = url .. "&title=" .. urlencode(title)
+
 	return url
 end
 
@@ -152,6 +164,17 @@ function Armory:OnCopyClosed( wndHandler, wndControl )
 	self.wndCopy:Show(false,true)
 
 	self.wndArmory:SetSprite("ArmorySprites:Base")
+end
+
+-- https://gist.github.com/ignisdesign/4323051
+function urlencode(str)
+   if (str) then
+      str = string.gsub (str, "\n", "\r\n")
+      str = string.gsub (str, "([^%w ])",
+         function (c) return string.format ("%%%02X", string.byte(c)) end)
+      str = string.gsub (str, " ", "+")
+   end
+   return str    
 end
 
 -----------------------------------------------------------------------------------------------
