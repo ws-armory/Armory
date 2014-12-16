@@ -28,14 +28,14 @@ local Website = "http://ws-armory.github.io"
 -- Initialization
 -----------------------------------------------------------------------------------------------
 function Armory:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
+	o = o or {}
+	setmetatable(o, self)
+	self.__index = self
 
-    -- initialize variables here
+	-- initialize variables here
 	self.wndArmory = nil
 	self.wndCopy = nil
-    return o
+	return o
 end
 
 function Armory:Init()
@@ -45,9 +45,9 @@ function Armory:Init()
 		"Lib:ApolloFixes-1.0",
 		"Character",
 	}
-    Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
+	Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
 end
- 
+
 
 -----------------------------------------------------------------------------------------------
 -- Armory OnLoad
@@ -56,7 +56,7 @@ function Armory:OnLoad()
 	self.addonChar = Apollo.GetAddon("Character")
 	Apollo.RegisterEventHandler("ToggleCharacterWindow", "OnToggleCharacterWindow", self)
 
-    -- load our form file
+	-- load our form file
 	Apollo.LoadSprites("ArmorySprites.xml","ArmorySprites")
 	self.xmlDoc = XmlDoc.CreateFromFile("Armory.xml")
 
@@ -77,19 +77,19 @@ function Armory:OnToggleCharacterWindow(unitArg) --function Armory:OnDocLoaded()
 			Apollo.AddAddonErrorText(self, "Could not load the Armory window for some reason.")
 			return
 		end
-		
+
 		local nLeft, nTop, nRight, nBottom = self.addonChar.wndCharacter:FindChild("BGArt_HeaderFrame"):GetAnchorOffsets()
 		self.wndArmory:SetAnchorOffsets(nLeft+7, nTop+47, (nLeft+40)+7, (nTop+38)+47) -- The size of the armory window is 40x38
-	    self.wndArmory:Show(true,true)
-	
+		self.wndArmory:Show(true,true)
+
 		self.wndCopy = Apollo.LoadForm(self.xmlDoc, "Copy", wndParent, self)
 		if self.wndCopy == nil then
 			Apollo.AddAddonErrorText(self, "Could not load the Copy window for some reason.")
 			return
 		end
 
-	    self.wndCopy:Show(false,true)
-	
+		self.wndCopy:Show(false,true)
+
 		--self.xmlDoc = nil
 	end
 end
