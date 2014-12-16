@@ -2,27 +2,35 @@
 -- Client Lua Script for Armory
 -- Copyright (c) NCsoft. All rights reserved
 -----------------------------------------------------------------------------------------------
- 
+
 require "Window"
- 
+
 -----------------------------------------------------------------------------------------------
 -- Armory Module Definition
 -----------------------------------------------------------------------------------------------
-local Armory = {} 
- 
+local Armory = {}
+local ClassNames = {
+	[GameLib.CodeEnumClass.Warrior] 	= Apollo.GetString("ClassWarrior"),
+	[GameLib.CodeEnumClass.Engineer]	= Apollo.GetString("ClassEngineer"),
+	[GameLib.CodeEnumClass.Esper] 		= Apollo.GetString("ClassESPER"),
+	[GameLib.CodeEnumClass.Medic] 		= Apollo.GetString("ClassMedic"),
+	[GameLib.CodeEnumClass.Stalker] 	= Apollo.GetString("ClassStalker"),
+	[GameLib.CodeEnumClass.Spellslinger]	= Apollo.GetString("ClassSpellslinger"),
+}
+
 -----------------------------------------------------------------------------------------------
 -- Constants
 -----------------------------------------------------------------------------------------------
 -- e.g. local kiExampleVariableMax = 999
 local Website = "http://ws-armory.github.io"
- 
+
 -----------------------------------------------------------------------------------------------
 -- Initialization
 -----------------------------------------------------------------------------------------------
 function Armory:new(o)
     o = o or {}
     setmetatable(o, self)
-    self.__index = self 
+    self.__index = self
 
     -- initialize variables here
 	self.wndArmory = nil
@@ -127,8 +135,10 @@ end
 function Armory:LoadItems()
 	local slotId
 	local url
+	local unit = GameLib.GetPlayerUnit()
+	local title
 
-	for key, item in ipairs(GameLib.GetPlayerUnit():GetEquippedItems()) do
+	for key, item in ipairs(unit:GetEquippedItems()) do
 		slotId = item:GetSlot()
 		-- Do not export Tool, Key and Bag items
 		if slotId ~= 6 and slotId ~= 9 and slotId < 17 then
@@ -139,7 +149,10 @@ function Armory:LoadItems()
 			end
 		end
 	end
-	
+
+	title = unit:GetName() .. "@" .. GameLib.GetRealmName() .. " - " ClassNames[unit:GetClassId()] .. " [" .. unit:GetLevel() .. "]"
+	url = url .. "&title=" .. UrlEscape(title)
+
 	return url
 end
 
@@ -152,6 +165,15 @@ function Armory:OnCopyClosed( wndHandler, wndControl )
 	self.wndCopy:Show(false,true)
 
 	self.wndArmory:SetSprite("ArmorySprites:Base")
+end
+
+# See http://www.lua.org/pil/20.3.html
+function UrlEscape(s)
+	s = string.gsub(s, "+", " ")
+	s = string.gsub(s, "%%(%x%x)", function (h)
+		return string.char(tonumber(h, 16))
+	end)
+	return s
 end
 
 -----------------------------------------------------------------------------------------------
