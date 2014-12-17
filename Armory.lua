@@ -60,7 +60,7 @@ function Armory:OnLoad()
 	Apollo.LoadSprites("ArmorySprites.xml","ArmorySprites")
 	self.xmlDoc = XmlDoc.CreateFromFile("Armory.xml")
 
-	--self.xmlDoc:RegisterCallback("OnDocLoaded", self)
+	self.xmlDoc:RegisterCallback("OnDocLoaded", self)
 end
 
 -----------------------------------------------------------------------------------------------
@@ -68,29 +68,37 @@ end
 -----------------------------------------------------------------------------------------------
 -- Define general functions here
 
-function Armory:OnToggleCharacterWindow(unitArg) --function Armory:OnDocLoaded()
-	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
-		local wndParent = self.addonChar.wndCharacter:FindChild("CharFrame_BGArt")
+function Armory:OnDocLoaded()
+	self.loaded = false
+end
 
-		self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", wndParent, self)
-		if self.wndArmory == nil then
-			Apollo.AddAddonErrorText(self, "Could not load the Armory window for some reason.")
-			return
+function Armory:OnToggleCharacterWindow(unitArg)
+	if self.addonChar.wndCharacter:IsVisible() then
+		self.wndArmory:Show(false)
+		self.wndCopy:Show(false)
+	else
+		if not self.loaded and self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
+			local wndParent = self.addonChar.wndCharacter:FindChild("CharFrame_BGArt")
+
+			self.wndArmory = Apollo.LoadForm(self.xmlDoc, "Armory", wndParent, self)
+			if self.wndArmory == nil then
+				Apollo.AddAddonErrorText(self, "Could not load the Armory window for some reason.")
+				return
+			end
+
+			self.wndCopy = Apollo.LoadForm(self.xmlDoc, "Copy", wndParent, self)
+			if self.wndCopy == nil then
+				Apollo.AddAddonErrorText(self, "Could not load the Copy window for some reason.")
+				return
+			end
+
+			self.xmlDoc = nil
 		end
-		
 		local nLeft, nTop, nRight, nBottom = self.addonChar.wndCharacter:FindChild("BGArt_HeaderFrame"):GetAnchorOffsets()
 		self.wndArmory:SetAnchorOffsets(nLeft+7, nTop+47, (nLeft+40)+7, (nTop+38)+47) -- The size of the armory window is 40x38
-	    self.wndArmory:Show(true,true)
-	
-		self.wndCopy = Apollo.LoadForm(self.xmlDoc, "Copy", wndParent, self)
-		if self.wndCopy == nil then
-			Apollo.AddAddonErrorText(self, "Could not load the Copy window for some reason.")
-			return
-		end
-
-	    self.wndCopy:Show(false,true)
-	
-		--self.xmlDoc = nil
+		self.wndArmory:Show(true)
+		self.wndCopy:Show(false)
+		self.loaded = true
 	end
 end
 
