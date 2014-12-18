@@ -129,7 +129,7 @@ function Armory:OnMouseClick( wndHandler, wndControl, eMouseButton, nLastRelativ
 		self.wndCopy:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard, Armory:LoadItems())
 
 		local nLeft, nTop, nRight, nBottom = self.wndArmory:GetAnchorOffsets()
-		self.wndCopy:SetAnchorOffsets((nLeft-220)-4, (nBottom-160), nLeft-4, nBottom) -- The size of the copy window is 220x160
+		self.wndCopy:SetAnchorOffsets((nLeft-240)-4, (nBottom-180), nLeft-4, nBottom) -- The size of the copy window is 240x180
 
 		self.wndCopy:Show(true,true)
 	end
