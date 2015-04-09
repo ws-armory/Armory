@@ -1,6 +1,11 @@
 package-as: Armory
+enable-nolib-creation: no
+externals:
+  LibApolloFixes:
+    url: https://github.com/wildstarnasa/LibApolloFixes
 ignore:
   - TODO
   - NEWS
   - VERSION
+  - LICENSE
 license-output: LICENSE
