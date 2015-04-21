@@ -2,7 +2,7 @@ package-as: Armory
 enable-nolib-creation: no
 externals:
   LibApolloFixes:
-    url: https://github.com/wildstarnasa/LibApolloFixes
+    url: https://github.com/wildstarnasa/LibApolloFixes.git
 ignore:
   - TODO
   - NEWS
