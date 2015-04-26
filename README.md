@@ -55,6 +55,7 @@ That's all, as said before, really simple !
 
 More details about the website internals can be found on it's [dedicated webpage](https://github.com/ws-armory/ws-armory.github.io).
 
+
 ## Contact ##
 * [Armory chat room](https://gitter.im/ws-armory/chat/~chat)
 * [Wildstar addon chat room](https://gitter.im/ws-armory/Armory/~chat)
