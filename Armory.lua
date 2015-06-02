@@ -28,14 +28,14 @@ local Website = "http://ws-armory.github.io"
 -- Initialization
 -----------------------------------------------------------------------------------------------
 function Armory:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
+	o = o or {}
+	setmetatable(o, self)
+	self.__index = self
 
-    -- initialize variables here
+	-- initialize variables here
 	self.wndArmory = nil
 	self.wndCopy = nil
-    return o
+	return o
 end
 
 function Armory:Init()
@@ -45,9 +45,9 @@ function Armory:Init()
 		"Lib:ApolloFixes-1.0",
 		"Character",
 	}
-    Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
+	Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
 end
- 
+
 
 -----------------------------------------------------------------------------------------------
 -- Armory OnLoad
@@ -56,7 +56,7 @@ function Armory:OnLoad()
 	self.addonChar = Apollo.GetAddon("Character")
 	Apollo.RegisterEventHandler("ToggleCharacterWindow", "OnToggleCharacterWindow", self)
 
-    -- load our form file
+	-- load our form file
 	Apollo.LoadSprites("ArmorySprites.xml","ArmorySprites")
 	self.xmlDoc = XmlDoc.CreateFromFile("Armory.xml")
 
