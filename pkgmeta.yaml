@@ -1,10 +1,10 @@
 package-as: Armory
 enable-nolib-creation: no
+required-dependencies:
+  - 231193-libarmory
 externals:
   libs/LibApolloFixes:
     url: https://github.com/wildstarnasa/LibApolloFixes.git
-  libs/LibArmory:
-    url: https://github.com/ws-armory/LibArmory.git
 ignore:
   - TODO
   - NEWS
