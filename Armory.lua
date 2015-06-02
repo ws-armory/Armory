@@ -9,20 +9,11 @@ require "Window"
 -- Armory Module Definition
 -----------------------------------------------------------------------------------------------
 local Armory = {}
-local ClassNames = {
-	[GameLib.CodeEnumClass.Warrior] 	= Apollo.GetString("ClassWarrior"),
-	[GameLib.CodeEnumClass.Engineer]	= Apollo.GetString("ClassEngineer"),
-	[GameLib.CodeEnumClass.Esper] 		= Apollo.GetString("ClassESPER"),
-	[GameLib.CodeEnumClass.Medic] 		= Apollo.GetString("ClassMedic"),
-	[GameLib.CodeEnumClass.Stalker] 	= Apollo.GetString("ClassStalker"),
-	[GameLib.CodeEnumClass.Spellslinger]	= Apollo.GetString("ClassSpellslinger"),
-}
 
 -----------------------------------------------------------------------------------------------
 -- Constants
 -----------------------------------------------------------------------------------------------
 -- e.g. local kiExampleVariableMax = 999
-local Website = "http://ws-armory.github.io"
 
 -----------------------------------------------------------------------------------------------
 -- Initialization
@@ -43,6 +34,7 @@ function Armory:Init()
 	local strConfigureButtonText = ""
 	local tDependencies = {
 		"Lib:ApolloFixes-1.0",
+		"Armory:LibArmory-1.0",
 		"Character",
 	}
 	Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
@@ -53,6 +45,7 @@ end
 -- Armory OnLoad
 -----------------------------------------------------------------------------------------------
 function Armory:OnLoad()
+	self.libArmory = Apollo.GetPackage("Armory:LibArmory-1.0").tPackage
 	self.addonChar = Apollo.GetAddon("Character")
 	Apollo.RegisterEventHandler("ToggleCharacterWindow", "OnToggleCharacterWindow", self)
 
@@ -126,7 +119,7 @@ function Armory:OnMouseClick( wndHandler, wndControl, eMouseButton, nLastRelativ
 		self.wndArmory:SetSprite("ArmorySprites:Base")
 	else
 		self.wndArmory:SetSprite("ArmorySprites:Active")
-		self.wndCopy:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard, Armory:LoadItems())
+		self.wndCopy:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard, self.libArmory.generatelink())
 
 		local nLeft, nTop, nRight, nBottom = self.wndArmory:GetAnchorOffsets()
 		self.wndCopy:SetAnchorOffsets((nLeft-240)-4, (nBottom-170), nLeft-4, nBottom) -- The size of the copy window is 240x170
@@ -140,30 +133,6 @@ end
 -- CopyButton Functions
 ---------------------------------------------------------------------------------------------------
 
-function Armory:LoadItems()
-	local slotId
-	local url
-	local unit = GameLib.GetPlayerUnit()
-
-	for key, item in ipairs(unit:GetEquippedItems()) do
-		slotId = item:GetSlot()
-		-- Do not export Tool, Key and Bag items
-		if slotId ~= 6 and slotId ~= 9 and slotId < 17 then
-			if url == nil or url == '' then
-				url = Website .. "/?" .. slotId .. "=" .. item:GetItemId()
-			else
-				url = url .. "&" ..slotId .. "=" .. item:GetItemId()
-			end
-		end
-	end
-
-	local title = unit:GetName() .. " - " .. ClassNames[unit:GetClassId()] .. " [" .. unit:GetLevel() .. "]"
-	url = url .. "&title=" .. urlencode(title)
-
-	return url
-end
-
-
 function Armory:OnCopyClosed( wndHandler, wndControl )
 	if wndControl ~= self.wndCopy then return end
 
@@ -174,16 +143,6 @@ function Armory:OnCopyClosed( wndHandler, wndControl )
 	self.wndArmory:SetSprite("ArmorySprites:Base")
 end
 
--- https://gist.github.com/ignisdesign/4323051
-function urlencode(str)
-   if (str) then
-      str = string.gsub (str, "\n", "\r\n")
-      str = string.gsub (str, "([^%w ])",
-         function (c) return string.format ("%%%02X", string.byte(c)) end)
-      str = string.gsub (str, " ", "+")
-   end
-   return str    
-end
 
 -----------------------------------------------------------------------------------------------
 -- Armory Instance

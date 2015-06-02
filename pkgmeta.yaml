@@ -3,6 +3,8 @@ enable-nolib-creation: no
 externals:
   LibApolloFixes:
     url: https://github.com/wildstarnasa/LibApolloFixes.git
+  LibArmory:
+    url: https://github.com/ws-armory/LibArmory.git
 ignore:
   - TODO
   - NEWS
