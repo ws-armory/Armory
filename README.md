@@ -1,14 +1,6 @@
 # Wildstar "Armory" project ##
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/ws-armory/Armory/~chat)
 
-## Summary ##
-* [Overview](#overview)
-* [Developer Notes](#developer-notes)
-  * [How does it work](#how-does-it-work)
-  * [Technical details](#technical-details)
-  * [The website](#the-website)
-* [Contact](#contact)
-
 ## Overview ##
 
 The main idea of this project is to provide a way for [Wildstar](http://wildstar-online.com/) players to share a link to their equipment (to post it on forums or in a guide for example).
@@ -20,41 +12,11 @@ It is possible to get a link to your equipment in-game using the [Armory addon](
 
 ## Developer Notes ##
 
-### How does it work ###
+This addon uses the [LibArmory library](https://github.com/ws-armory/LibArmory) to generate links to equiped items on the [ws-armory.github.io](http://ws-armory.github.io/) website.
 
-Wildstar in-game API exposes unique _#_ to reference each objects, information about this objects can be found in different online databases such as [Jabbithole](http://www.jabbithole.com).
-
-This addon gather couples of (_slot_id_, _item_id_) then generates a link to the website based on this couples.
-
-Information about items are then gathered by the website using the [Jabbithole](http://www.jabbithole.com) online database ([more details](https://github.com/ws-armory/ws-armory.github.io) about the website internals).
-
-
-### Technical details ###
-
-The addon is really simple, it's work only rely on three functions of the `GameLib` API: `PlayerUnit:GetEquippedItems()`, `Item:GetSlot()` and `Item:GetItemId()`.
-
-It pretty much looks like as:
-
-```lua
-var url = InitUrl()
-
-for key, item in ipairs(GameLib.GetPlayerUnit():GetEquippedItems()) do
-	AddItemToUrl(url,item:GetSlot(), item:GetItemId())
-end
-
---- generated links are looking like:
---- http://ws-armory.github.io/?0=17830&1=13449&4=13329&5=30459&7=28056&10=28012
-
-CopyUrlToClipboard(url)
-```
-
-That's all, as said before, really simple !
-
-
-### The website ###
+## The website ##
 
 More details about the website internals can be found on it's [dedicated webpage](https://github.com/ws-armory/ws-armory.github.io).
-
 
 ## Contact ##
 * [Curse project's page](http://www.curse.com/ws-addons/wildstar/225711-armory)
