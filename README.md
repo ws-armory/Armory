@@ -1,5 +1,5 @@
 # Wildstar "Armory" project ##
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/ws-armory/Armory/~chat)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/ws-armory)
 
 ## Overview ##
 
@@ -20,7 +20,5 @@ More details about the website internals can be found on it's [dedicated webpage
 
 ## Contact ##
 * [Curse project's page](http://www.curse.com/ws-addons/wildstar/225711-armory)
-* [Armory chat room](https://gitter.im/ws-armory/chat/~chat)
-* [Wildstar addon chat room](https://gitter.im/ws-armory/Armory/~chat)
+* [Armory chat room](https://gitter.im/ws-armory)
 * [Bug report and Feature request](https://github.com/ws-armory/Armory/issues)
-* [Private message](https://github.com/olbat)
