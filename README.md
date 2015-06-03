@@ -57,6 +57,7 @@ More details about the website internals can be found on it's [dedicated webpage
 
 
 ## Contact ##
+* [Curse project's page](http://www.curse.com/ws-addons/wildstar/225711-armory)
 * [Armory chat room](https://gitter.im/ws-armory/chat/~chat)
 * [Wildstar addon chat room](https://gitter.im/ws-armory/Armory/~chat)
 * [Bug report and Feature request](https://github.com/ws-armory/Armory/issues)
