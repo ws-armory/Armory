@@ -1,6 +1,7 @@
 # Wildstar "Armory" project ##
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/ws-armory)
 
+
 ## Overview ##
 
 The main idea of this project is to provide a way for [Wildstar](http://wildstar-online.com/) players to share a link to their equipment (to post it on forums or in a guide for example).
@@ -13,6 +14,7 @@ It is possible to get a link to your equipment in-game using the [Armory addon](
 ## Developer Notes ##
 
 This addon uses the [LibArmory library](https://github.com/ws-armory/LibArmory) to generate links to equiped items on the [ws-armory.github.io](http://ws-armory.github.io/) website.
+
 
 ## The website ##
 
