@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Addon Author="o1b4t" APIVersion="10" Name="Armory" Description="Wildstar Armory - Game add-on ">
+<Addon Author="o1b4t" APIVersion="11" Name="Armory" Description="Wildstar Armory - Game add-on ">
     <Script Name="libs\LibApolloFixes\LibApolloFixes-1.0.lua"/>
     <Script Name="libs\LibArmory\LibArmory.lua"/>
     <Script Name="Armory.lua"/>

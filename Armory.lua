@@ -87,8 +87,8 @@ function Armory:OnToggleCharacterWindow(unitArg)
 
 			self.xmlDoc = nil
 		end
-		local nLeft, nTop, nRight, nBottom = self.addonChar.wndCharacter:FindChild("BGArt_HeaderFrame"):GetAnchorOffsets()
-		self.wndArmory:SetAnchorOffsets(nLeft+7, nTop+47, (nLeft+40)+7, (nTop+38)+47) -- The size of the armory window is 40x38
+		local nLeft, nTop, nRight, nBottom = self.addonChar.wndCharacter:FindChild("FooterBG"):GetAnchorOffsets()
+		self.wndArmory:SetAnchorOffsets((nRight-40)-75, nTop-35, nRight-75, (nTop+38)-35) -- The size of the armory icon is 40x38
 		self.wndArmory:Show(true)
 		self.wndCopy:Show(false)
 		self.loaded = true
@@ -122,7 +122,7 @@ function Armory:OnMouseClick( wndHandler, wndControl, eMouseButton, nLastRelativ
 		self.wndCopy:FindChild("CopyButton"):SetActionData(GameLib.CodeEnumConfirmButtonType.CopyToClipboard, self.libArmory.generatelink())
 
 		local nLeft, nTop, nRight, nBottom = self.wndArmory:GetAnchorOffsets()
-		self.wndCopy:SetAnchorOffsets((nLeft-240)-4, (nBottom-170), nLeft-4, nBottom) -- The size of the copy window is 240x170
+		self.wndCopy:SetAnchorOffsets((nRight-240)-1, (nBottom-170-40)-1, nRight-1, (nBottom-40)-1) -- The size of the copy window is 240x170, the icon 40x38
 
 		self.wndCopy:Show(true,true)
 	end
